@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Learn Compose"
 include(":app")
+include(":navigation")
