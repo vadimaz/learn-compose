@@ -32,16 +32,22 @@ import kotlinx.parcelize.Parcelize
 
 fun itemScreenProducer(args: ItemScreenArgs): () -> ItemScreen = { ItemScreen(args) }
 
-sealed class ItemScreenArgs: Parcelable {
+sealed class ItemScreenArgs : Parcelable {
     @Parcelize
-    data object Add: ItemScreenArgs()
+    data object Add : ItemScreenArgs()
+
     @Parcelize
-    data class Edit(val index: Int): ItemScreenArgs()
+    data class Edit(val index: Int) : ItemScreenArgs()
 }
+
+data class ItemScreenResponse(
+    val args: ItemScreenArgs,
+    val newValue: String
+)
 
 class ItemScreen(
     private val args: ItemScreenArgs
-): AppScreen {
+) : AppScreen {
     override val environment: AppScreenEnvironment
         get() = AppScreenEnvironment().apply {
             titleRes = if (args is ItemScreenArgs.Add) {
@@ -64,12 +70,7 @@ class ItemScreen(
             },
             isAddMode = args is ItemScreenArgs.Add,
             onSubmitNewItem = { newValue ->
-                if (args is ItemScreenArgs.Edit) {
-                    itemsRepository.updateItem(args.index, newValue)
-                } else {
-                    itemsRepository.addItem(newValue)
-                }
-                router.pop()
+                router.pop(ItemScreenResponse(args, newValue))
             }
         )
     }

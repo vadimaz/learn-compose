@@ -29,6 +29,7 @@ import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
 import com.blogspot.vadim.learncompose.ui.FloatingAction
 import com.blogspot.vadim.learncompose.ui.theme.LearnComposeTheme
 import com.blogspot.vadim.navigation.LocalRouter
+import com.blogspot.vadim.navigation.ResponseListener
 import com.blogspot.vadim.navigation.Router
 
 val ItemsScreenProducer = { ItemsScreen() }
@@ -54,6 +55,13 @@ class ItemsScreen : AppScreen {
         val items by itemRepository.getItems().collectAsStateWithLifecycle()
         val isEmpty by remember {
             derivedStateOf { items.isEmpty() }
+        }
+        ResponseListener<ItemScreenResponse> { response ->
+            if (response.args is ItemScreenArgs.Edit) {
+                itemRepository.updateItem(response.args.index, response.newValue)
+            } else {
+                itemRepository.addItem(response.newValue)
+            }
         }
         ItemsContent(
             isEmpty = isEmpty,
