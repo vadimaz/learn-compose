@@ -1,7 +1,9 @@
 package com.blogspot.vadim.learncompose.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,9 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.blogspot.vadim.learncompose.ui.AppRoute
 import com.blogspot.vadim.learncompose.ItemsRepository
 import com.blogspot.vadim.learncompose.R
+import com.blogspot.vadim.learncompose.ui.AppRoute
 import com.blogspot.vadim.learncompose.ui.AppScreen
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
 import com.blogspot.vadim.learncompose.ui.FloatingAction
@@ -31,19 +33,19 @@ import com.blogspot.vadim.navigation.Router
 
 val ItemsScreenProducer = { ItemsScreen() }
 
-class ItemsScreen: AppScreen {
+class ItemsScreen : AppScreen {
     private var router: Router? = null
 
     override val environment = AppScreenEnvironment().apply {
-            titleRes = R.string.items
-            icon = Icons.AutoMirrored.Filled.List
-            floatingAction = FloatingAction(
-                icon = Icons.Default.Add,
-                onClick = {
-                    router?.launch(AppRoute.AddItem)
-                }
-            )
-        }
+        titleRes = R.string.items
+        icon = Icons.AutoMirrored.Filled.List
+        floatingAction = FloatingAction(
+            icon = Icons.Default.Add,
+            onClick = {
+                router?.launch(AppRoute.Item(ItemScreenArgs.Add))
+            }
+        )
+    }
 
     @Composable
     override fun Content() {
@@ -55,7 +57,10 @@ class ItemsScreen: AppScreen {
         }
         ItemsContent(
             isEmpty = isEmpty,
-            items = { items }
+            items = { items },
+            onItemClicked = { index ->
+                router?.launch(AppRoute.Item(ItemScreenArgs.Edit(index)))
+            }
         )
     }
 }
@@ -63,7 +68,8 @@ class ItemsScreen: AppScreen {
 @Composable
 fun ItemsContent(
     isEmpty: Boolean,
-    items: () -> List<String>
+    items: () -> List<String>,
+    onItemClicked: (Int) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (isEmpty) {
@@ -73,10 +79,16 @@ fun ItemsContent(
             )
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(items.invoke()) { item ->
+                val itemList = items()
+                items(itemList.size) { index ->
                     Text(
-                        text = item,
-                        modifier = Modifier.padding(12.dp)
+                        text = itemList[index],
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onItemClicked(index)
+                            }
+                            .padding(12.dp)
                     )
                 }
             }
@@ -92,6 +104,10 @@ private fun ItemsPreview() {
         .collectAsStateWithLifecycle()
 
     LearnComposeTheme {
-        ItemsContent(items.isEmpty()) { items }
+        ItemsContent(
+            isEmpty = items.isEmpty(),
+            items = { items },
+            onItemClicked = {}
+        )
     }
 }

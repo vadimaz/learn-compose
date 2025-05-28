@@ -8,11 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.blogspot.vadim.learncompose.R
-import com.blogspot.vadim.learncompose.ui.screens.AddItemScreen
 import com.blogspot.vadim.navigation.Screen
 import com.blogspot.vadim.navigation.ScreenEnvironment
-
-val AddItemScreenProducer = { AddItemScreen() }
 
 @Stable
 interface AppScreen : Screen {

@@ -1,5 +1,6 @@
 package com.blogspot.vadim.learncompose.ui.screens
 
+import android.os.Parcelable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,11 +27,28 @@ import com.blogspot.vadim.learncompose.ui.AppScreen
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
 import com.blogspot.vadim.learncompose.ui.theme.LearnComposeTheme
 import com.blogspot.vadim.navigation.LocalRouter
+import kotlinx.parcelize.Parcelize
 
-class AddItemScreen: AppScreen {
+
+fun itemScreenProducer(args: ItemScreenArgs): () -> ItemScreen = { ItemScreen(args) }
+
+sealed class ItemScreenArgs: Parcelable {
+    @Parcelize
+    data object Add: ItemScreenArgs()
+    @Parcelize
+    data class Edit(val index: Int): ItemScreenArgs()
+}
+
+class ItemScreen(
+    private val args: ItemScreenArgs
+): AppScreen {
     override val environment: AppScreenEnvironment
         get() = AppScreenEnvironment().apply {
-            titleRes = R.string.add_item
+            titleRes = if (args is ItemScreenArgs.Add) {
+                R.string.add_item
+            } else {
+                R.string.edit_item
+            }
         }
 
     @Composable
@@ -38,9 +56,19 @@ class AddItemScreen: AppScreen {
         val itemsRepository = ItemsRepository.get()
         val router = LocalRouter.current
 
-        AddItemContent(
-            onSubmitNewItem = {
-                itemsRepository.addItem(it)
+        ItemContent(
+            initialValue = if (args is ItemScreenArgs.Edit) {
+                remember { itemsRepository.getItems().value[args.index] }
+            } else {
+                ""
+            },
+            isAddMode = args is ItemScreenArgs.Add,
+            onSubmitNewItem = { newValue ->
+                if (args is ItemScreenArgs.Edit) {
+                    itemsRepository.updateItem(args.index, newValue)
+                } else {
+                    itemsRepository.addItem(newValue)
+                }
                 router.pop()
             }
         )
@@ -48,10 +76,14 @@ class AddItemScreen: AppScreen {
 }
 
 @Composable
-fun AddItemContent(onSubmitNewItem: (String) -> Unit) {
-    var newItemValue by rememberSaveable { mutableStateOf("") }
+fun ItemContent(
+    initialValue: String = "",
+    isAddMode: Boolean = false,
+    onSubmitNewItem: (String) -> Unit
+) {
+    var currentItemValue by rememberSaveable { mutableStateOf(initialValue) }
     val isAddEnabled by remember {
-        derivedStateOf { newItemValue.isNotEmpty() }
+        derivedStateOf { currentItemValue.isNotEmpty() }
     }
 
     Column(
@@ -60,31 +92,36 @@ fun AddItemContent(onSubmitNewItem: (String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = newItemValue,
+            value = currentItemValue,
             label = {
                 Text(text = stringResource(R.string.enter_new_value))
             },
             singleLine = true,
             onValueChange = {
-                newItemValue = it
+                currentItemValue = it
             }
         )
         Spacer(Modifier.height(16.dp))
         Button(
             enabled = isAddEnabled,
             onClick = {
-                onSubmitNewItem.invoke(newItemValue)
+                onSubmitNewItem.invoke(currentItemValue)
             }
         ) {
-            Text(text = stringResource(R.string.add_new_item))
+            val buttonText = if (isAddMode) {
+                R.string.add_item
+            } else {
+                R.string.edit_item
+            }
+            Text(text = stringResource(buttonText))
         }
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
-private fun AddItemPreview() {
+private fun ItemPreview() {
     LearnComposeTheme {
-        AddItemContent(onSubmitNewItem = {})
+        ItemContent(onSubmitNewItem = {})
     }
 }

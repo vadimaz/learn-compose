@@ -17,6 +17,8 @@ interface ItemsRepository {
      */
     fun addItem(item: String)
 
+    fun updateItem(index: Int, newValue: String)
+
     /**
      * Remove all items from the list. The flow returned by [getItems] will
      * be automatically updated.
@@ -38,6 +40,10 @@ object ItemsRepositoryImpl : ItemsRepository {
 
     override fun addItem(item: String) {
         items.update { it + item }
+    }
+
+    override fun updateItem(index: Int, newValue: String) {
+        items.update { it.toMutableList().apply { set(index, newValue) } }
     }
 
     override fun clear() {
