@@ -7,17 +7,17 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.blogspot.vadim.learncompose.ui.AppRoute.Tab
 import com.blogspot.vadim.learncompose.ItemsRepository
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
+import com.blogspot.vadim.learncompose.ui.RootTabs
 import com.blogspot.vadim.navigation.NavigationHost
-import com.blogspot.vadim.navigation.rememberNavigationState
+import com.blogspot.vadim.navigation.rememberNavigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScaffold() {
     val itemsRepository: ItemsRepository = ItemsRepository.get()
-    val navigation = rememberNavigationState(Tab.Items)
+    val navigation = rememberNavigation(RootTabs)
     val (router, navigationState) = navigation
     val environment = navigationState.currentScreen.environment as AppScreenEnvironment
 
@@ -31,12 +31,10 @@ fun AppScaffold() {
             )
         },
         bottomBar = {
-            if (navigationState.isRoot) {
-                AppNavigationBar(
-                    currentRoute = navigationState.currentRoute,
-                    onTabClick = router::restart
-                )
-            }
+            AppNavigationBar(
+                currentIndex = navigationState.currentStackIndex,
+                onIndexSelected = router::switchStack
+            )
         },
         floatingActionButton = {
             AppFloatingActionButton(environment.floatingAction)

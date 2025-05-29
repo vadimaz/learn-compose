@@ -7,6 +7,7 @@ import com.blogspot.vadim.learncompose.ui.screens.ProfileScreenProducer
 import com.blogspot.vadim.learncompose.ui.screens.SettingsScreenProducer
 import com.blogspot.vadim.learncompose.ui.screens.itemScreenProducer
 import com.blogspot.vadim.navigation.Route
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.parcelize.Parcelize
 
 sealed class AppRoute(
@@ -29,4 +30,4 @@ sealed class AppRoute(
     }
 }
 
-val RootTabs = listOf(Tab.Items, Tab.Settings, Tab.Profile)
+val RootTabs = persistentListOf(Tab.Items, Tab.Settings, Tab.Profile)
