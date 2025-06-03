@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.blogspot.vadim.learncompose.ItemsRepository
+import com.blogspot.vadim.learncompose.ui.AppDeepLinkHandler
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
 import com.blogspot.vadim.learncompose.ui.RootTabs
 import com.blogspot.vadim.navigation.NavigationHost
@@ -17,7 +18,7 @@ import com.blogspot.vadim.navigation.rememberNavigation
 @Composable
 fun AppScaffold() {
     val itemsRepository: ItemsRepository = ItemsRepository.get()
-    val navigation = rememberNavigation(RootTabs)
+    val navigation = rememberNavigation(RootTabs, deepLinkHandler = AppDeepLinkHandler)
     val (router, navigationState) = navigation
     val environment = navigationState.currentScreen.environment as AppScreenEnvironment
 
