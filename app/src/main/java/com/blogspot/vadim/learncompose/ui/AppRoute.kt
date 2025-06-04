@@ -1,11 +1,11 @@
 package com.blogspot.vadim.learncompose.ui
 
 import com.blogspot.vadim.learncompose.ui.AppRoute.Tab
-import com.blogspot.vadim.learncompose.ui.screens.ItemScreenArgs
-import com.blogspot.vadim.learncompose.ui.screens.ItemsScreenProducer
+import com.blogspot.vadim.learncompose.ui.screens.item.ItemScreenArgs
+import com.blogspot.vadim.learncompose.ui.screens.items.ItemsScreenProducer
 import com.blogspot.vadim.learncompose.ui.screens.ProfileScreenProducer
 import com.blogspot.vadim.learncompose.ui.screens.SettingsScreenProducer
-import com.blogspot.vadim.learncompose.ui.screens.itemScreenProducer
+import com.blogspot.vadim.learncompose.ui.screens.item.itemScreenProducer
 import com.blogspot.vadim.navigation.Route
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.parcelize.Parcelize

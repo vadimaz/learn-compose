@@ -1,7 +1,7 @@
 package com.blogspot.vadim.learncompose.ui
 
 import android.net.Uri
-import com.blogspot.vadim.learncompose.ui.screens.ItemScreenArgs
+import com.blogspot.vadim.learncompose.ui.screens.item.ItemScreenArgs
 import com.blogspot.vadim.navigation.links.DeepLinkHandler
 import com.blogspot.vadim.navigation.links.MultiStackState
 
