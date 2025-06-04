@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     api(libs.kotlinx.collections.immutable)
+    api(libs.androidx.lifecycle.viewmodel.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

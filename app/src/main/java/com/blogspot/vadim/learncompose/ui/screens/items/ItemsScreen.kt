@@ -1,4 +1,4 @@
-package com.blogspot.vadim.learncompose.ui.screens
+package com.blogspot.vadim.learncompose.ui.screens.items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
@@ -21,12 +20,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.blogspot.vadim.learncompose.ItemsRepository
 import com.blogspot.vadim.learncompose.R
 import com.blogspot.vadim.learncompose.ui.AppRoute
 import com.blogspot.vadim.learncompose.ui.AppScreen
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
 import com.blogspot.vadim.learncompose.ui.FloatingAction
+import com.blogspot.vadim.learncompose.ui.screens.item.ItemScreenArgs
 import com.blogspot.vadim.learncompose.ui.theme.LearnComposeTheme
 import com.blogspot.vadim.navigation.LocalRouter
 import com.blogspot.vadim.navigation.ResponseListener
@@ -51,18 +52,12 @@ class ItemsScreen : AppScreen {
     @Composable
     override fun Content() {
         router = LocalRouter.current
-        val itemRepository = ItemsRepository.get()
-        val items by itemRepository.getItems().collectAsStateWithLifecycle()
+        val viewModel = viewModel<ItemsViewModel>()
+        val items by viewModel.itemsFlow.collectAsStateWithLifecycle()
         val isEmpty by remember {
             derivedStateOf { items.isEmpty() }
         }
-        ResponseListener<ItemScreenResponse> { response ->
-            if (response.args is ItemScreenArgs.Edit) {
-                itemRepository.updateItem(response.args.index, response.newValue)
-            } else {
-                itemRepository.addItem(response.newValue)
-            }
-        }
+        ResponseListener(viewModel::processResponse)
         ItemsContent(
             isEmpty = isEmpty,
             items = { items },
