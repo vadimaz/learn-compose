@@ -3,6 +3,8 @@ package com.blogspot.vadim.learncompose
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
+import javax.inject.Singleton
 
 interface ItemsRepository {
 
@@ -24,13 +26,10 @@ interface ItemsRepository {
      * be automatically updated.
      */
     fun clear()
-
-    companion object {
-        fun get(): ItemsRepository = ItemsRepositoryImpl
-    }
 }
 
-object ItemsRepositoryImpl : ItemsRepository {
+@Singleton
+class ItemsRepositoryImpl @Inject constructor(): ItemsRepository {
 
     private val items = MutableStateFlow(getFakeItems())
 

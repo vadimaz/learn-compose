@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.blogspot.vadim.learncompose.ItemsRepository
 import com.blogspot.vadim.learncompose.R
+import com.blogspot.vadim.learncompose.di.injectViewModel
 import com.blogspot.vadim.learncompose.ui.AppRoute
 import com.blogspot.vadim.learncompose.ui.AppScreen
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
@@ -52,7 +53,7 @@ class ItemsScreen : AppScreen {
     @Composable
     override fun Content() {
         router = LocalRouter.current
-        val viewModel = viewModel<ItemsViewModel>()
+        val viewModel = injectViewModel<ItemsViewModel>()
         val items by viewModel.itemsFlow.collectAsStateWithLifecycle()
         val isEmpty by remember {
             derivedStateOf { items.isEmpty() }
@@ -102,13 +103,11 @@ fun ItemsContent(
 @Preview(showSystemUi = true)
 @Composable
 private fun ItemsPreview() {
-    val items by ItemsRepository.get()
-        .getItems()
-        .collectAsStateWithLifecycle()
+    val items = emptyList<String>()
 
     LearnComposeTheme {
         ItemsContent(
-            isEmpty = items.isEmpty(),
+            isEmpty = true,
             items = { items },
             onItemClicked = {}
         )

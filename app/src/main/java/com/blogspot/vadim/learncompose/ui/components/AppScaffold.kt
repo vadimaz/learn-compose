@@ -8,6 +8,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.blogspot.vadim.learncompose.ItemsRepository
+import com.blogspot.vadim.learncompose.MainViewModel
+import com.blogspot.vadim.learncompose.di.injectViewModel
 import com.blogspot.vadim.learncompose.ui.AppDeepLinkHandler
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
 import com.blogspot.vadim.learncompose.ui.RootTabs
@@ -17,7 +19,7 @@ import com.blogspot.vadim.navigation.rememberNavigation
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScaffold() {
-    val itemsRepository: ItemsRepository = ItemsRepository.get()
+    val viewModel = injectViewModel<MainViewModel>()
     val navigation = rememberNavigation(RootTabs, deepLinkHandler = AppDeepLinkHandler)
     val (router, navigationState) = navigation
     val environment = navigationState.currentScreen.environment as AppScreenEnvironment
@@ -28,7 +30,7 @@ fun AppScaffold() {
                 titleRes = environment.titleRes,
                 isRoot = navigationState.isRoot,
                 onBack = router::pop,
-                onClear = itemsRepository::clear
+                onClear = viewModel::clear
             )
         },
         bottomBar = {

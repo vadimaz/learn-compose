@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.blogspot.vadim.learncompose.ItemsRepository
 import com.blogspot.vadim.learncompose.R
+import com.blogspot.vadim.learncompose.di.injectViewModel
 import com.blogspot.vadim.learncompose.ui.AppScreen
 import com.blogspot.vadim.learncompose.ui.AppScreenEnvironment
 import com.blogspot.vadim.learncompose.ui.theme.LearnComposeTheme
@@ -60,7 +61,9 @@ class ItemScreen(
 
     @Composable
     override fun Content() {
-        val viewModel = viewModel { ItemViewModel(args) }
+        val viewModel = injectViewModel<ItemViewModel, ItemViewModel.Factory> { factory ->
+            factory.create(args)
+        }
         val router = LocalRouter.current
 
         ItemContent(
