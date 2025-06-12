@@ -24,21 +24,16 @@ import com.blogspot.vadim.learncompose.ui.screens.items.ItemsViewModel.ScreenSta
 
 @Composable
 fun ItemsScreen() {
-    val navController = LocalNavController.current
     val viewModel = hiltViewModel<ItemsViewModel>()
     val screenState = viewModel.stateFlow.collectAsStateWithLifecycle()
     ItemsContent(
-        getScreenState = { screenState.value },
-        onLaunchAddItemScreen = {
-            navController.navigate(AddItemRoute)
-        }
+        getScreenState = { screenState.value }
     )
 }
 
 @Composable
 fun ItemsContent(
-    getScreenState: () -> ScreenState,
-    onLaunchAddItemScreen: () -> Unit
+    getScreenState: () -> ScreenState
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -61,17 +56,6 @@ fun ItemsContent(
                 }
             }
         }
-        FloatingActionButton(
-            onClick = onLaunchAddItemScreen,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = null
-            )
-        }
     }
 }
 
@@ -79,7 +63,6 @@ fun ItemsContent(
 @Composable
 private fun ItemsPreview() {
     ItemsContent(
-        getScreenState = { ScreenState.Loading },
-        onLaunchAddItemScreen = {}
+        getScreenState = { ScreenState.Loading }
     )
 }
