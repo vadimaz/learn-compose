@@ -13,23 +13,22 @@ import com.blogspot.vadim.learncompose.components.ItemDetailsState
 import com.blogspot.vadim.learncompose.ui.screens.AddItemRoute
 import com.blogspot.vadim.learncompose.ui.screens.EventConsumer
 import com.blogspot.vadim.learncompose.ui.screens.LocalNavController
+import com.blogspot.vadim.learncompose.ui.screens.action.ActionScreen
 import com.blogspot.vadim.learncompose.ui.screens.add.AddItemViewModel.ScreenState
 import com.blogspot.vadim.learncompose.ui.screens.routeClass
 
 @Composable
 fun AddItemScreen() {
     val viewModel: AddItemViewModel = hiltViewModel()
-    val screenState by viewModel.stateFlow.collectAsStateWithLifecycle()
-    AddItemContent(
-        screenState = screenState,
-        onAddButtonClicked = viewModel::add
-    )
-    val navController = LocalNavController.current
-    EventConsumer(viewModel.exitChannel) {
-        if (navController.currentBackStackEntry.routeClass() == AddItemRoute::class) {
-            navController.popBackStack()
+    ActionScreen(
+        delegate = viewModel,
+        content = { (screenState, onExecuteAction) ->
+            AddItemContent(
+                screenState = screenState,
+                onAddButtonClicked = onExecuteAction
+            )
         }
-    }
+    )
 }
 
 @Composable
