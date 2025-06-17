@@ -15,7 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.blogspot.vadim.learncompose.components.LoadResultContent
 import com.blogspot.vadim.learncompose.model.LoadResult
-import com.blogspot.vadim.learncompose.ui.screens.EditItemRoute
+import com.blogspot.vadim.learncompose.ui.screens.ItemsGraph
 import com.blogspot.vadim.learncompose.ui.screens.LocalNavController
 import com.blogspot.vadim.learncompose.ui.screens.items.ItemsViewModel.ScreenState
 
@@ -27,7 +27,7 @@ fun ItemsScreen() {
     ItemsContent(
         getLoadResult = { loadResult.value },
         onItemClicked = { index ->
-            navController.navigate(EditItemRoute(index))
+            navController.navigate(ItemsGraph.EditItemRoute(index))
         }
     )
 }

@@ -2,20 +2,14 @@ package com.blogspot.vadim.learncompose.ui.screens.add
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.blogspot.vadim.learncompose.R
 import com.blogspot.vadim.learncompose.components.ItemDetails
 import com.blogspot.vadim.learncompose.components.ItemDetailsState
-import com.blogspot.vadim.learncompose.ui.screens.AddItemRoute
-import com.blogspot.vadim.learncompose.ui.screens.EventConsumer
-import com.blogspot.vadim.learncompose.ui.screens.LocalNavController
 import com.blogspot.vadim.learncompose.ui.screens.action.ActionScreen
 import com.blogspot.vadim.learncompose.ui.screens.add.AddItemViewModel.ScreenState
-import com.blogspot.vadim.learncompose.ui.screens.routeClass
 
 @Composable
 fun AddItemScreen() {

@@ -22,17 +22,27 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.blogspot.vadim.learncompose.components.AppNavigationBar
 import com.blogspot.vadim.learncompose.components.AppToolbar
 import com.blogspot.vadim.learncompose.components.NavigateUpAction
-import com.blogspot.vadim.learncompose.ui.screens.AddItemRoute
-import com.blogspot.vadim.learncompose.ui.screens.EditItemRoute
-import com.blogspot.vadim.learncompose.ui.screens.ItemsRoute
+import com.blogspot.vadim.learncompose.ui.screens.ItemsGraph
+import com.blogspot.vadim.learncompose.ui.screens.ItemsGraph.AddItemRoute
+import com.blogspot.vadim.learncompose.ui.screens.ItemsGraph.EditItemRoute
+import com.blogspot.vadim.learncompose.ui.screens.ItemsGraph.ItemsRoute
 import com.blogspot.vadim.learncompose.ui.screens.LocalNavController
+import com.blogspot.vadim.learncompose.ui.screens.MainTabs
+import com.blogspot.vadim.learncompose.ui.screens.ProfileGraph
+import com.blogspot.vadim.learncompose.ui.screens.ProfileGraph.ProfileRoute
+import com.blogspot.vadim.learncompose.ui.screens.SettingsGraph
+import com.blogspot.vadim.learncompose.ui.screens.SettingsGraph.SettingsRoute
 import com.blogspot.vadim.learncompose.ui.screens.add.AddItemScreen
 import com.blogspot.vadim.learncompose.ui.screens.edit.EditItemScreen
 import com.blogspot.vadim.learncompose.ui.screens.items.ItemsScreen
+import com.blogspot.vadim.learncompose.ui.screens.profile.ProfileScreen
 import com.blogspot.vadim.learncompose.ui.screens.routeClass
+import com.blogspot.vadim.learncompose.ui.screens.settings.SettingsScreen
 import com.blogspot.vadim.learncompose.ui.theme.LearnComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -64,6 +74,8 @@ fun NavApp() {
         ItemsRoute::class -> R.string.items_screen
         AddItemRoute::class -> R.string.add_item_screen
         EditItemRoute::class -> R.string.edit_item_screen
+        SettingsRoute::class -> R.string.settings_screen
+        ProfileRoute::class -> R.string.profile_screen
         else -> R.string.app_name
     }
     Scaffold(
@@ -90,6 +102,12 @@ fun NavApp() {
                     )
                 }
             }
+        },
+        bottomBar = {
+            AppNavigationBar(
+                navController = navController,
+                tabs = MainTabs
+            )
         }
     ) { paddingValues ->
         CompositionLocalProvider(
@@ -97,16 +115,24 @@ fun NavApp() {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = ItemsRoute,
+                startDestination = ProfileGraph,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                composable<ItemsRoute> { ItemsScreen() }
-                composable<AddItemRoute> { AddItemScreen() }
-                composable<EditItemRoute> { entry ->
-                    val route: EditItemRoute = entry.toRoute()
-                    EditItemScreen(index = route.index)
+                navigation<ItemsGraph>(startDestination = ItemsRoute) {
+                    composable<ItemsRoute> { ItemsScreen() }
+                    composable<AddItemRoute> { AddItemScreen() }
+                    composable<EditItemRoute> { entry ->
+                        val route: EditItemRoute = entry.toRoute()
+                        EditItemScreen(index = route.index)
+                    }
+                }
+                navigation<SettingsGraph>(startDestination = SettingsRoute) {
+                    composable<SettingsRoute> { SettingsScreen() }
+                }
+                navigation<ProfileGraph>(startDestination = ProfileRoute) {
+                    composable<ProfileRoute> { ProfileScreen() }
                 }
             }
         }
