@@ -1,7 +1,9 @@
 package com.blogspot.vadim.learncompose
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
@@ -113,9 +117,15 @@ fun NavApp() {
         CompositionLocalProvider(
             LocalNavController provides navController
         ) {
+            val intentHost = LocalActivity.current?.intent?.data?.host
+            val startDestination: Any = when (intentHost) {
+                "settings" -> SettingsGraph
+                "items" -> ItemsGraph
+                else -> ProfileGraph
+            }
             NavHost(
                 navController = navController,
-                startDestination = ProfileGraph,
+                startDestination = startDestination,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
@@ -123,12 +133,17 @@ fun NavApp() {
                 navigation<ItemsGraph>(startDestination = ItemsRoute) {
                     composable<ItemsRoute> { ItemsScreen() }
                     composable<AddItemRoute> { AddItemScreen() }
-                    composable<EditItemRoute> { entry ->
+                    composable<EditItemRoute>(
+                        deepLinks = listOf(EditItemRoute.Link)
+                    ) { entry ->
                         val route: EditItemRoute = entry.toRoute()
                         EditItemScreen(index = route.index)
                     }
                 }
-                navigation<SettingsGraph>(startDestination = SettingsRoute) {
+                navigation<SettingsGraph>(
+                    startDestination = SettingsRoute,
+                    deepLinks = listOf(SettingsGraph.Link)
+                ) {
                     composable<SettingsRoute> { SettingsScreen() }
                 }
                 navigation<ProfileGraph>(startDestination = ProfileRoute) {
